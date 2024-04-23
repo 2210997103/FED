@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add to Cart Page</title>
+    <style>body {
+        font-family: Arial, sans-serif;
+        background-color:plum;
+    }
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+        background-color: black;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    h2 {
+        color: white;
+    }
+    
+    .product {
+        display:inline-block;
+        border: 1px solid #ccc;
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #f9f9f9;
+        border-radius: 10px;
+    }
+    
+    .add-to-cart-btn {
+        background-color:blue;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+    
+    #add-to-cart-btn:hover {
+        background-color: #45a049;
+    }
+    
+    #cart {
+        
+        border: 1px solid #ccc;
+        padding: 20px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    }
+    
+    #total {
+        margin-top: 20px;
+    }
+    
+    #total h3 {
+        color: green;
+        margin:0;
+       padding:020px;
+       
+    }
+    
+    #total-amount {
+        color: grey;
+        font-size: 20px;
+        font-weight: bold;
+    }</style>
+</head>
+<body>
+   
+    <script>
+        const container = document.createElement('div');
+        container.classList.add('container');
+        const productsHeader = document.createElement('h2');
+        productsHeader.textContent = 'Products';
+        
+        const topp = createProduct('top.jpg', 'Top', 800);
+        const watchh= createProduct('watch.jpg', 'watch', 800);
+        const makeupp = createProduct('makeup.jpg', 'make-up', 800);
+        const shoess = createProduct('shoes.jpg', 'shoes',4800);
+        const jackett = createProduct('jacket.jpg', 'jacket', 200);
+        
+        
+        function createProduct(imageSrc, productName, price) {
+            const productDiv = document.createElement('div');
+            productDiv.classList.add('product');
+        
+            const image = document.createElement('img');
+            image.src = imageSrc;
+            productDiv.appendChild(image);
+        
+            const nameParagraph = document.createElement('p');
+            nameParagraph.textContent = productName;
+            productDiv.appendChild(nameParagraph);
+            const priceParagraph = document.createElement('p');
+            priceParagraph.textContent = 'Price: $' + price;
+            productDiv.appendChild(priceParagraph);
+            const addToCartButton = document.createElement('button');
+            addToCartButton.textContent = 'Add to Cart';
+            addToCartButton.classList.add('add-to-cart-btn');
+            productDiv.appendChild(addToCartButton);
+        
+            return productDiv;
+        }
+        
+        const cartDiv = document.createElement('div');
+        cartDiv.id = 'cart';
+        
+        const cartHeader = document.createElement('h2');
+        cartHeader.textContent = 'Cart';
+        
+        const cartItemsList = document.createElement('ul');
+        cartItemsList.id = 'cart-items';
+        
+        const totalDiv = document.createElement('div');
+        totalDiv.id = 'total';
+        
+        const totalHeader = document.createElement('h3');
+        totalHeader.textContent = 'Total Amount:';
+        
+        const totalAmountParagraph = document.createElement('p');
+        totalAmountParagraph.id = 'total-amount';
+        totalAmountParagraph.textContent = '$0';
+        
+        container.appendChild(productsHeader);
+        container.appendChild(topp);
+        container.appendChild(shoess);
+        container.appendChild(jackett);
+        container.appendChild(watchh);
+        container.appendChild(makeupp);
+        container.appendChild(cartDiv);
+        cartDiv.appendChild(cartHeader);
+        cartDiv.appendChild(cartItemsList);
+        cartDiv.appendChild(totalDiv);
+        totalDiv.appendChild(totalHeader);
+        totalDiv.appendChild(totalAmountParagraph);
+        
+        document.body.appendChild(container);
+        document.addEventListener("DOMContentLoaded", function() {
+            const addToCartBtns = document.querySelectorAll(".add-to-cart-btn");
+            const cartItemsList = document.getElementById("cart-items");
+            const totalAmountDisplay = document.getElementById("total-amount");
+        
+            let totalAmount = 0;
+            let cartItems = {}; 
+        
+            addToCartBtns.forEach(function(btn) {
+                btn.addEventListener("click", function() {
+                    let productName = btn.parentElement.querySelector("p:nth-child(2)").textContent;
+                    let productPrice = parseFloat(btn.parentElement.querySelector("p:nth-child(3)").textContent.split("$")[1]);
+        
+                    if (productName in cartItems) {
+                        cartItems[productName].quantity++;
+                        cartItems[productName].element.textContent = productName + " - $" + productPrice.toFixed(2) + " x " + cartItems[productName].quantity;
+                    } else {
+                        const listItem = document.createElement("li");
+                        listItem.textContent = productName + " - $" + productPrice.toFixed(2) + " x 1";
+                        cartItemsList.appendChild(listItem);
+                           const removeBtn = document.createElement("button");
+                           removeBtn.textContent = "Remove";
+                           removeBtn.classList.add("remove-btn");
+                           removeBtn.addEventListener("click", function() {
+                               
+                               cartItemsList.removeChild(listItem);
+                        
+                               totalAmount -= productPrice * cartItems[productName].quantity;
+                               totalAmountDisplay.textContent = "$" + totalAmount.toFixed(2);
+                               
+                               delete cartItems[productName];
+                           });
+           
+                          
+                           listItem.appendChild(removeBtn);
+           
+                          cartItemsList.appendChild(listItem);
+                            cartItems[productName] = {
+                               element: listItem,
+                               quantity: 1
+                           };
+                       }
+                       totalAmount += productPrice;
+                       totalAmountDisplay.textContent = "$" + totalAmount.toFixed(2);
+                   });
+               });
+           });
+             </script>
+  
+</body>
+</html>
